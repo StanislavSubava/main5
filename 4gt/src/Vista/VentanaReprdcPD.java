@@ -5,8 +5,11 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -22,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
+import Controlador.exportacion;
 import modelo.canciones;
 
 public class VentanaReprdcPD extends JFrame {
@@ -39,6 +43,7 @@ public class VentanaReprdcPD extends JFrame {
 	private int newpsciondspPdcasSelec;
 	private Clip clip;
 	private boolean paused = false;
+	private JButton exportar, añadirPlayList;
 
 	/**
 	 * Launch the application.
@@ -248,8 +253,52 @@ public class VentanaReprdcPD extends JFrame {
 	
 	
 	JButton btnMenu = new JButton("=");
+	btnMenu.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			exportar.setVisible(true);
+			añadirPlayList.setVisible(true);
+		}
+	});
 	btnMenu.setBounds(119, 301, 65, 40);
 	panel.add(btnMenu);
+
+	exportar = new JButton("Exportar");
+	exportar.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+
+			canciones cancion = new canciones(audio);
+			String nombre = cancion.getNombreA();
+
+			String localizacion = exportacion.exportarRuta();
+
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+			String tiempo = sdf.format(new Date());
+
+			String nombreArchivo = "PodcastFavorita_" + tiempo + ".txt";
+			File file = new File(localizacion, nombreArchivo);
+
+			try (FileWriter lector = new FileWriter(file)) {
+				lector.write(nombre);
+				JOptionPane.showMessageDialog(null, "Se ha cargado bien el archivo!");
+			} catch (IOException ex) {
+				JOptionPane.showMessageDialog(null, "Error al guardar el archivo: " + ex.getMessage());
+			}
+		}
+
+	});
+	exportar.setBounds(20, 301, 100, 40);
+	exportar.setVisible(false);
+	panel.add(exportar);
+
+	añadirPlayList = new JButton("Añadir a la Playlist");
+	añadirPlayList.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+
+		}
+	});
+	añadirPlayList.setBounds(20, 250, 170, 40);
+	añadirPlayList.setVisible(false);
+	panel.add(añadirPlayList);
 	
 	}
 	 
